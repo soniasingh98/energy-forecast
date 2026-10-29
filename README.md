@@ -26,18 +26,7 @@ Open [http://localhost:8000](http://localhost:8000). Stop the app with `Ctrl+C`.
 
 ### Local development
 
-Requires Python 3.11+ and Node.js 20+.
-
-Terminal 1:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r backend\requirements.txt
-uvicorn backend.app.main:app --reload --port 8000
-```
-
-Terminal 2:
+Requires Node.js 20+.
 
 ```powershell
 cd frontend
@@ -45,7 +34,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). Vite proxies `/api` requests to the Python service on port 8000.
+Open [http://localhost:5173](http://localhost:5173). The development environment file points the frontend directly to the deployed backend at `https://energy-forecast-neon.vercel.app`; a local Python backend is not required. The Vite `/api` proxy is used only when `VITE_API_BASE_URL` is unset (for example, if you remove or rename `.env.development`).
 
 ## Data and analysis
 
@@ -109,7 +98,7 @@ The API health check is `GET /api/health`; analysis is `GET /api/analysis?delive
 
 1. Create a second Vercel project and import the same GitHub repository again.
 2. Set **Root Directory** to `frontend`. Vercel should detect Vite; use build command `npm run build` and output directory `dist`.
-3. Add `VITE_API_BASE_URL` = `https://<your-backend-project>.vercel.app` (backend origin only; no `/api` suffix and no trailing slash).
+3. The production API origin is configured in `frontend/.env.production` as `https://energy-forecast-neon.vercel.app`. If you change backend projects, update that value or set the Vercel frontend environment variable `VITE_API_BASE_URL` to override it.
 4. Deploy. The frontend calls `${VITE_API_BASE_URL}/api/...`. Locally, when the variable is unset, Vite continues to proxy relative `/api` requests to localhost.
 5. Open the deployed frontend. If it was deployed before configuring the backend's `FRONTEND_ORIGINS`, redeploy the backend after adding the frontend's exact production URL.
 
